@@ -10,7 +10,7 @@ class DatabaseHelper(context:Context) : SQLiteOpenHelper(
     //1.Context
     //2.Nome do banco de dados
     //3.CursorFactory
-    //4.versão
+    //4.versão do banco de dados
 
     context,"loja",null,1
 ) {

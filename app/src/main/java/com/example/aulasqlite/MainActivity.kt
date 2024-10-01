@@ -2,6 +2,8 @@ package com.example.aulasqlite
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,6 +17,10 @@ class MainActivity : AppCompatActivity() {
         DatabaseHelper(this)
     }
 
+    private lateinit var editNomeProduto:EditText
+    private lateinit var btnSalvar:Button
+    private lateinit var btnListar:Button
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -25,13 +31,47 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-       try{
-           val sql = "INSERT INTO produtos VALUES(null,'Celular Motorola','512gb')"
-           bancoDados.writableDatabase.execSQL(sql)
-           Log.i("db_info","Registro salvo")
-       }catch (e:Exception){
-           e.printStackTrace()
-       }
+        editNomeProduto = findViewById(R.id.editNomeProduto)
+        btnSalvar = findViewById(R.id.btnSalvar)
+        btnListar = findViewById(R.id.btnListar)
+
+
+        btnSalvar.setOnClickListener{
+            salvar()
+        }
+
+        btnListar.setOnClickListener{
+            listar()
+        }
+
 
     }
+
+    private fun salvar(){
+        val nomeProduto = editNomeProduto.text.toString()
+
+        try{
+            val sql = "INSERT INTO produtos VALUES(null,'$nomeProduto','512gb')"
+            bancoDados.writableDatabase.execSQL(sql)
+            Log.i("db_info","Produto salvo")
+        }catch (e:Exception){
+            e.printStackTrace()
+            Log.i("db_info","Erro ao salvar produto")
+        }
+    }
+
+    private fun listar(){
+        val sql = "SELECT * FROM produtos"
+        val cursor = bancoDados.readableDatabase.rawQuery(sql, null)
+
+        while (cursor.moveToNext()){
+            val idProduto = cursor.getInt(0)
+            val titulo = cursor.getString(1)
+            val descricao = cursor.getString(2)
+
+            Log.i("db_info","PRODUTOS: $idProduto - $titulo - $descricao")
+        }
+    }
+
+
 }
